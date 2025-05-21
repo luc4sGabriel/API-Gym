@@ -7,7 +7,7 @@ export const app = fastify()
 
 app.register(appRoutes)
 
-app.setErrorHandler((error, request, reply) => {
+app.setErrorHandler((error, _, reply) => {
     if (error instanceof ZodError) {
         return reply
         .status(500)
@@ -17,7 +17,7 @@ app.setErrorHandler((error, request, reply) => {
     if (env.NODE_ENV !== 'production') {
         console.log(error);
     } else {
-        // DataDog/Sentry/NewRelic
+        // DataDog/Sentry/NewRelics
     }
 
     return reply
