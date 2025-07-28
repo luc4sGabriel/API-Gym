@@ -21,8 +21,8 @@ describe('Check-In Use Case', () => {
             title: 'Gym 01',
             description: "",
             phone: "",
-            latitude: new Decimal(0),
-            longitude: new Decimal(0),
+            latitude: new Decimal(-8.292156),
+            longitude: new Decimal(-35.978563),
         })
 
         vi.useFakeTimers()
@@ -36,8 +36,8 @@ describe('Check-In Use Case', () => {
         const { checkIn } = await sut.execute({
             userId: 'user-01',
             gymId: 'gym-01',
-            userLatitude: 0,
-            userLongitude: 0,
+            userLatitude: -8.292156,
+            userLongitude: -35.978563,
         })
 
         expect(checkIn.id).toEqual(expect.any(String))
@@ -49,16 +49,16 @@ describe('Check-In Use Case', () => {
         await sut.execute({
             userId: 'user-01',
             gymId: 'gym-01',
-            userLatitude: 0,
-            userLongitude: 0,
+            userLatitude: -8.292156,
+            userLongitude: -35.978563,
         })
 
         await expect(() =>
             sut.execute({
                 userId: 'user-01',
                 gymId: 'gym-01',
-                userLatitude: 0,
-                userLongitude: 0,
+            userLatitude: -8.292156,
+            userLongitude: -35.978563,
             })
         ).rejects.toBeInstanceOf(DuplicateCheckInSameDayError)
     })
@@ -69,8 +69,8 @@ describe('Check-In Use Case', () => {
         await sut.execute({
             userId: 'user-01',
             gymId: 'gym-01',
-            userLatitude: 0,
-            userLongitude: 0,
+            userLatitude: -8.292156,
+            userLongitude: -35.978563,
         })
 
         vi.setSystemTime(new Date(2025, 0, 2, 12, 0, 0))
@@ -78,8 +78,8 @@ describe('Check-In Use Case', () => {
         const { checkIn } = await sut.execute({
             userId: 'user-01',
             gymId: 'gym-01',
-            userLatitude: 0,
-            userLongitude: 0,
+            userLatitude: -8.292156,
+            userLongitude: -35.978563,
         })
 
         expect(checkIn.id).toEqual(expect.any(String))
