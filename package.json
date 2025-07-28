@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:ui":"vitest --ui"
+    "test:ui": "vitest --ui"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +30,7 @@
   "dependencies": {
     "@prisma/client": "5.19.1",
     "bcryptjs": "3.0.2",
+    "dayjs": "1.11.13",
     "dotenv": "16.4.5",
     "fastify": "4.28.1",
     "node": "22.13.0",
