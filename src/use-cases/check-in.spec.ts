@@ -1,9 +1,10 @@
 import { expect, describe, it, beforeEach, vi, afterEach } from 'vitest';
 import { CheckinUseCase } from './check-in';
 import { InMemoryCheckInsRepository } from '@/repositories/in-memory/in-memory-check-ins-repository';
-import { DuplicateCheckInSameDayError } from './errors/duplicate-checkin-same-day-error';
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository';
 import { Decimal } from '@prisma/client/runtime/library';
+import { MaxNumberOfCheckInsError } from './errors/max-number-of-check-ins-error';
+import { MaxDistanceError } from './errors/max-distance-error';
 
 let CheckInsRepository: InMemoryCheckInsRepository
 let GymsRepository: InMemoryGymsRepository
@@ -11,18 +12,18 @@ let sut: CheckinUseCase
 
 describe('Check-In Use Case', () => {
 
-    beforeEach(() => {
+    beforeEach(async () => {
         CheckInsRepository = new InMemoryCheckInsRepository();
         GymsRepository = new InMemoryGymsRepository();
         sut = new CheckinUseCase(CheckInsRepository, GymsRepository)
 
-        GymsRepository.items.push({
+        await GymsRepository.create({
             id: 'gym-01',
             title: 'Gym 01',
             description: "",
             phone: "",
-            latitude: new Decimal(-8.292156),
-            longitude: new Decimal(-35.978563),
+            latitude: -8.292156,
+            longitude: -35.978563,
         })
 
         vi.useFakeTimers()
@@ -60,7 +61,7 @@ describe('Check-In Use Case', () => {
             userLatitude: -8.292156,
             userLongitude: -35.978563,
             })
-        ).rejects.toBeInstanceOf(DuplicateCheckInSameDayError)
+        ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError)
     })
 
     it('should be able to check in twice in different days', async () => {
@@ -101,6 +102,6 @@ describe('Check-In Use Case', () => {
             gymId: 'gym-01',
             userLatitude: 0,
             userLongitude: 0,
-        })).rejects.toBeInstanceOf(Error)
+        })).rejects.toBeInstanceOf(MaxDistanceError)
     })
 })
