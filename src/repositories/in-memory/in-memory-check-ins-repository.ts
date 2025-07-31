@@ -20,6 +20,12 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     return checkIn
   }
 
+  async countByUserId(userId: string){
+    const count = this.items.filter((item) => item.userId === userId).length;
+
+    return count;
+  }
+
   async findByUserIdOnDate(userId: string, date: Date) {
 
     const startOfDay = dayjs(date).startOf("date");
