@@ -10,8 +10,6 @@ export async function profileController(
   try {
     const getProfileUseCase = makeGetUserProfileUseCase()
 
-    await request.jwtVerify()
-
     const data = await getProfileUseCase.execute({
         userId: request.user.sub
     })
