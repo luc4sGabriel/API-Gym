@@ -31,7 +31,6 @@ export async function authenticateController(
     })
 
     reply.status(200).send({
-      ...user,
       token
     })
 
