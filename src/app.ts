@@ -1,24 +1,31 @@
 import fastify from 'fastify'
-import { usersRoutes } from './http/controllers/users/routes'
 import { ZodError } from 'zod'
 import { env } from './env'
 import fastifyJwt from '@fastify/jwt'
 import { gymsRoutes } from './http/controllers/gyms/routes'
+import { checkInsRoutes } from './http/controllers/check-ins/routes'
+import { usersRoutes } from './http/controllers/users/routes'
 
-export const app = fastify()
+export const app = fastify(
+    // {
+    // logger: true,
+    // bodyLimit: 1048576, // opcional, tamanho máximo do body
+    // }
+)
+
+app.register(usersRoutes)
+app.register(gymsRoutes)
+app.register(checkInsRoutes)
 
 app.register(fastifyJwt, {
     secret: env.JWT_SECRET,
 })
 
-app.register(usersRoutes)
-app.register(gymsRoutes)
-
 app.setErrorHandler((error, _, reply) => {
     if (error instanceof ZodError) {
         return reply
-        .status(500)
-        .send({ message: 'Validation error.', issues: error.format() })
+            .status(400)
+            .send({ message: 'Validation error.', issues: error.format(), error })
     }
 
     if (env.NODE_ENV !== 'production') {
@@ -29,5 +36,6 @@ app.setErrorHandler((error, _, reply) => {
 
     return reply
         .status(500)
-        .send({ message: 'Internal Server Error' })
+        .send({ message: 'Internal Server Error', error: error.message })
+
 })

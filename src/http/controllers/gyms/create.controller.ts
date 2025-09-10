@@ -7,22 +7,18 @@ export async function createGymsController(
     reply: FastifyReply,
 ) {
     const createGymBodySchema = z.object({
-        title: z.string().min(1),
+        title: z.string(),
         description: z.string().nullable(),
         phone: z.string().nullable(),
-        latitude: z.number().refine(value => {
-            return Math.abs(value) <= 90
-        }),
-        longitude: z.number().refine(value => {
-            return Math.abs(value) <= 180
-        }),
+        latitude: z.coerce.number().refine(value => Math.abs(value) <= 90),
+        longitude: z.coerce.number().refine(value => Math.abs(value) <= 180),
     })
 
-    const { title, description, phone, longitude, latitude } = createGymBodySchema.parse(request.body)
+    const { title, description, phone, latitude, longitude } = createGymBodySchema.parse(request.body)
 
-    const registerUseCase = makeCreateGymUseCase()
+    const createUseCase = makeCreateGymUseCase()
 
-    await registerUseCase.execute({
+    await createUseCase.execute({
         title,
         description,
         phone,
