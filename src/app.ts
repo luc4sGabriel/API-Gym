@@ -6,12 +6,7 @@ import { gymsRoutes } from './http/controllers/gyms/routes'
 import { checkInsRoutes } from './http/controllers/check-ins/routes'
 import { usersRoutes } from './http/controllers/users/routes'
 
-export const app = fastify(
-    // {
-    // logger: true,
-    // bodyLimit: 1048576, // opcional, tamanho máximo do body
-    // }
-)
+export const app = fastify()
 
 app.register(usersRoutes)
 app.register(gymsRoutes)
