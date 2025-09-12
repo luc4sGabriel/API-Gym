@@ -1,7 +1,5 @@
 import { z } from 'zod'
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { PrismaUsersRepository } from '@/repositories/prisma/prisma.users.repository'
-import { AuthenticateUseCase } from '@/use-cases/authenticate'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/factories/make-authenticate-use-case'
 
@@ -24,14 +22,36 @@ export async function authenticateController(
         password,
     })
 
-    const token = await reply.jwtSign({}, {
+    const token = await reply.jwtSign(
+      {}, 
+      {
       sign: {
         sub: user.id,
       },
-    })
+      }
+    )
 
-    reply.status(200).send({
-      token
+    const refreshToken = await reply.jwtSign(
+      {}, 
+      {
+      sign: {
+        sub: user.id,
+        expiresIn: '7d',
+      },
+      }
+    )
+
+    reply
+    .setCookie('refreshToken', refreshToken, {
+      path: '/',
+      secure: true,
+      sameSite: true,
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    })
+    .status(200)
+    .send({
+      token,
     })
 
   } catch (error) {
